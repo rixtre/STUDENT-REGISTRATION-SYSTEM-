@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration System - Rizal High School</title>
+    <style>
+        /* ... (keep all the same CSS styles) ... */
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🏫</div>
+                    <div class="logo-text">
+                        <h1>Rizal High School</h1>
+                        <p>Student Registration System</p>
+                    </div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
+                        <li><a href="#" class="nav-link" onclick="showSection('students')">Student Records</a></li>
+                        <li><a href="#" class="nav-link" onclick="showSection('registration')">Registration</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3>Main Menu</h3>
+                <ul>
+                    <li><a href="#" class="menu-link active" onclick="showSection('dashboard')">Dashboard</a></li>
+                    <li><a href="#" class="menu-link" onclick="showSection('students')">Student Records</a></li>
+                    <li><a href="#" class="menu-link" onclick="showSection('registration')">Student Registration</a></li>
+                    <li><a href="#" class="menu-link" onclick="showSection('search')">Search Student</a></li>
+                    <li><a href="#" class="menu-link" onclick="showSection('verification')">Student Verification</a></li>
+                </ul>
+                
+                <h3>Reports</h3>
+                <ul>
+                    <li><a href="#" class="menu-link" onclick="showSection('reports')">Enrollment Summary</a></li>
+                </ul>
+            </aside>
+
+            <main class="content">
+                <!-- ... (keep all other sections the same) ... -->
+
+                <!-- Student Verification Section -->
+                <section id="verification" class="content-section hidden">
+                    <h2>Student Verification</h2>
+                    <p>Verify student enrollment by checking their submitted requirements.</p>
+                    
+                    <div class="search-container">
+                        <input type="text" id="verify-search" class="form-control" placeholder="Enter Student ID to verify...">
+                        <button id="verify-search-btn" class="btn" onclick="searchStudentForVerification()">Search</button>
+                    </div>
+                    
+                    <div id="verification-result" class="verification-section hidden">
+                        <h3>Student Information</h3>
+                        <div id="student-details">
+                            <!-- Student details will be populated here -->
+                        </div>
+                        
+                        <h3>Requirements Status</h3>
+                        <div id="requirements-status">
+                            <!-- Requirements status will be populated here -->
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="verification-status">Verification Status</label>
+                            <select id="verification-status" class="form-control">
+                                <option value="pending">Pending</option>
+                                <option value="verified">Verified</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="verification-notes">Notes</label>
+                            <textarea id="verification-notes" class="form-control" rows="3" placeholder="Add any notes about verification..."></textarea>
+                        </div>
+                        
+                        <button id="update-verification" class="btn btn-success" onclick="updateVerificationStatus()">Update Verification</button>
+                    </div>
+                </section>
+
+                <!-- ... (keep other sections the same) ... -->
+            </main>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Student Registration System &copy; 2023 Rizal High School | Developed by Espinosa, Padilla, Taon</p>
+        </div>
+    </footer>
+
+    <script>
+        // Student data storage using JSON
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        let currentEditingStudent = null;
+        let currentVerificationStudent = null;
+
+        // Initialize with sample data if empty
+        if (students.length === 0) {
+            students = [
+                {
+                    id: '2023-001',
+                    firstName: 'Juan',
+                    lastName: 'Dela Cruz',
+                    gradeLevel: '7',
+                    section: 'Diamond',
+                    contact: '09123456789',
+                    address: 'Pasig City',
+                    requirements: ['birth-certificate', 'report-card', 'good-moral', 'photo'],
+                    status: 'verified',
+                    verificationNotes: 'All requirements complete',
+                    dateRegistered: '2023-08-15'
+                },
+                {
+                    id: '2023-002',
+                    firstName: 'Maria',
+                    lastName: 'Santos',
+                    gradeLevel: '8',
+                    section: 'Emerald',
+                    contact: '09198765432',
+                    address: 'Pasig City',
+                    requirements: ['birth-certificate', 'report-card'],
+                    status: 'pending',
+                    verificationNotes: 'Missing good moral and photo',
+                    dateRegistered: '2023-08-16'
+                },
+                {
+                    id: '2023-003',
+                    firstName: 'Jose',
+                    lastName: 'Reyes',
+                    gradeLevel: '9',
+                    section: 'Ruby',
+                    contact: '09223344556',
+                    address: 'Pasig City',
+                    requirements: ['birth-certificate', 'photo'],
+                    status: 'rejected',
+                    verificationNotes: 'Missing report card and good moral',
+                    dateRegistered: '2023-08-17'
+                }
+            ];
+            saveStudents();
+        }
+
+        // Show specific section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show the selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Update active states in navigation
+            document.querySelectorAll('.nav-link, .menu-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Update content if needed
+            if (sectionId === 'dashboard') {
+                updateDashboard();
+            } else if (sectionId === 'students') {
+                displayStudents();
+            } else if (sectionId === 'reports') {
+                generateReports();
+            } else if (sectionId === 'verification') {
+                // Clear verification section when showing it
+                document.getElementById('verification-result').classList.add('hidden');
+                document.getElementById('verify-search').value = '';
+            }
+        }
+
+        // Search for student verification
+        function searchStudentForVerification() {
+            const studentId = document.getElementById('verify-search').value.trim();
+            if (!studentId) {
+                showAlert('Please enter a Student ID', 'danger');
+                return;
+            }
+            
+            const student = students.find(s => s.id === studentId);
+            
+            if (!student) {
+                showAlert('Student not found! Please check the Student ID.', 'danger');
+                document.getElementById('verification-result').classList.add('hidden');
+                return;
+            }
+            
+            // Show verification section
+            document.getElementById('verification-result').classList.remove('hidden');
+            
+            // Populate student details
+            document.getElementById('student-details').innerHTML = `
+                <p><strong>Student ID:</strong> ${student.id}</p>
+                <p><strong>Name:</strong> ${student.firstName} ${student.lastName}</p>
+                <p><strong>Grade Level:</strong> Grade ${student.gradeLevel}</p>
+                <p><strong>Section:</strong> ${student.section}</p>
+                <p><strong>Contact:</strong> ${student.contact || 'N/A'}</p>
+                <p><strong>Address:</strong> ${student.address || 'N/A'}</p>
+                <p><strong>Date Registered:</strong> ${student.dateRegistered}</p>
+            `;
+            
+            // Populate requirements status
+            const requirementsList = [
+                { id: 'birth-certificate', name: 'Birth Certificate' },
+                { id: 'report-card', name: 'Report Card' },
+                { id: 'good-moral', name: 'Good Moral Certificate' },
+                { id: 'photo', name: '2x2 Photo' }
+            ];
+            
+            let requirementsHTML = '';
+            let submittedCount = 0;
+            
+            requirementsList.forEach(req => {
+                const hasRequirement = student.requirements.includes(req.id);
+                if (hasRequirement) submittedCount++;
+                
+                requirementsHTML += `
+                    <div style="margin-bottom: 10px; padding: 10px; background: ${hasRequirement ? '#e8f5e8' : '#ffe8e8'}; border-radius: 4px;">
+                        <input type="checkbox" id="verify-${req.id}" ${hasRequirement ? 'checked' : ''} disabled style="margin-right: 8px;">
+                        <label for="verify-${req.id}" style="font-weight: bold;">${req.name}</label>
+                        <span style="color: ${hasRequirement ? 'green' : 'red'}; margin-left: 10px; font-weight: bold;">
+                            ${hasRequirement ? '✓ SUBMITTED' : '✗ MISSING'}
+                        </span>
+                    </div>
+                `;
+            });
+            
+            // Add summary
+            requirementsHTML = `
+                <div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+                    <strong>Summary:</strong> ${submittedCount} of 4 requirements submitted
+                </div>
+                ${requirementsHTML}
+            `;
+            
+            document.getElementById('requirements-status').innerHTML = requirementsHTML;
+            
+            // Set current verification status
+            document.getElementById('verification-status').value = student.status;
+            document.getElementById('verification-notes').value = student.verificationNotes || '';
+            
+            // Store the current student ID for updating
+            currentVerificationStudent = studentId;
+        }
+
+        // Update verification status
+        function updateVerificationStatus() {
+            if (!currentVerificationStudent) {
+                showAlert('No student selected for verification', 'danger');
+                return;
+            }
+            
+            const status = document.getElementById('verification-status').value;
+            const notes = document.getElementById('verification-notes').value;
+            
+            const studentIndex = students.findIndex(student => student.id === currentVerificationStudent);
+            
+            if (studentIndex !== -1) {
+                students[studentIndex].status = status;
+                students[studentIndex].verificationNotes = notes;
+                
+                saveStudents();
+                showAlert('Verification status updated successfully!', 'success');
+                displayStudents();
+                updateDashboard();
+                
+                // Refresh the verification display
+                searchStudentForVerification();
+            }
+        }
+
+        // Verify student from other sections (like from student records)
+        function verifyStudentFromList(studentId) {
+            showSection('verification');
+            document.getElementById('verify-search').value = studentId;
+            searchStudentForVerification();
+        }
+
+        // ... (keep all other functions the same: addStudent, updateStudent, deleteStudent, etc.) ...
+
+        // Display all students in the table (updated to use the new verification function)
+        function displayStudents() {
+            const tableBody = document.getElementById('students-table-body');
+            tableBody.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.firstName} ${student.lastName}</td>
+                    <td>Grade ${student.gradeLevel}</td>
+                    <td>${student.section}</td>
+                    <td><span class="verification-status ${student.status}">${student.status.charAt(0).toUpperCase() + student.status.slice(1)}</span></td>
+                    <td class="action-buttons">
+                        <button class="action-btn edit-btn" onclick="editStudent('${student.id}')">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteStudent('${student.id}')">Delete</button>
+                        <button class="action-btn verify-btn" onclick="verifyStudentFromList('${student.id}')">Verify</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            // Create a temporary alert if one doesn't exist in verification section
+            let alertElement = document.getElementById('alert-message');
+            if (!alertElement) {
+                alertElement = document.createElement('div');
+                alertElement.id = 'temp-alert';
+                document.getElementById('verification').insertBefore(alertElement, document.getElementById('verification').firstChild);
+            }
+            
+            alertElement.textContent = message;
+            alertElement.className = `alert alert-${type}`;
+            alertElement.classList.remove('hidden');
+            
+            // Hide alert after 3 seconds
+            setTimeout(() => {
+                alertElement.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Save students to localStorage
+        function saveStudents() {
+            localStorage.setItem('students', JSON.stringify(students));
+        }
+
+        // Initialize the dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            displayStudents();
+        });
+    </script>
+</body>
+</html>
