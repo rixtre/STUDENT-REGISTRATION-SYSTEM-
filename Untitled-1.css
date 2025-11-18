@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHS Student Management System</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo i {
+            font-size: 3rem;
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+
+        .login-logo h1 {
+            color: #2a5298;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-logo p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #1e3c72;
+        }
+
+        .login-error {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #ffe6e6;
+            color: #d32f2f;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Main Application Styles */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e3c72;
+            color: white;
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo h1 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid #4cc9f0;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            color: #1e3c72;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #e9e9e9;
+        }
+
+        .section {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .card h3 {
+            margin-bottom: 1.5rem;
+            color: #1e3c72;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .alert {
+            padding: 0.75rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3c72;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e9e9e9;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            margin-right: 0.5rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .edit-btn {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .delete-btn {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        /* Search Styles */
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            flex: 1;
+        }
+
+        .search-result {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-result h4 {
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-result p {
+            margin-bottom: 0.25rem;
+            color: #555;
+        }
+
+        /* Report Styles */
+        .report-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-option {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .report-option:hover {
+            background: #e9ecef;
+            transform: translateY(-5px);
+        }
+
+        .report-option i {
+            font-size: 2rem;
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+
+        .report-option h4 {
+            margin-bottom: 0.5rem;
+            color: #1e3c72;
+        }
+
+        .report-option p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 {
+            color: #1e3c72;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                margin-top: 1rem;
+            }
+
+            .nav-links li {
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+
+            .nav-links a {
+                padding: 0.5rem 1rem;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+
+            .nav-links a.active {
+                border-left: none;
+                border-bottom: 4px solid #4cc9f0;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .report-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>SHS EduManage</h1>
+                <p>Senior High School Student Management</p>
+            </div>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div class="login-error" id="login-error">
+                    Invalid username or password. Please try again.
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main Application (Hidden by default) -->
+    <div id="app" class="container hidden">
+        <div class="sidebar">
+            <div class="logo">
+                <h1><i class="fas fa-graduation-cap"></i> SHS EduManage</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-section="register"><i class="fas fa-user-plus"></i> Register New Student</a></li>
+                <li><a href="#" data-section="view"><i class="fas fa-users"></i> View All Students</a></li>
+                <li><a href="#" data-section="search"><i class="fas fa-search"></i> Search Student</a></li>
+                <li><a href="#" data-section="reports"><i class="fas fa-chart-bar"></i> Generate Reports</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h2 id="page-title">Register New SHS Student</h2>
+                <div class="user-info">
+                    <span id="welcome-user">Welcome, Admin</span>
+                    <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+            
+            <!-- Register Student Section -->
+            <div id="register" class="section">
+                <div class="card">
+                    <h3>SHS Student Registration</h3>
+                    <div id="register-alert" class="alert hidden"></div>
+                    <form id="student-form">
+                        <div class="form-group">
+                            <label for="student-id">LRN (Learner Reference Number)</label>
+                            <input type="text" id="student-id" class="form-control" placeholder="Enter 12-digit LRN" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" class="form-control" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate</label>
+                            <input type="date" id="birthdate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" class="form-control" required>
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="track">SHS Track</label>
+                            <select id="track" class="form-control" required>
+                                <option value="">Select track</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Technical-Vocational-Livelihood">Technical-Vocational-Livelihood (TVL)</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Arts and Design">Arts and Design</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="strand">Strand</label>
+                            <select id="strand" class="form-control" required>
+                                <option value="">Select strand</option>
+                                <option value="STEM">STEM (Science, Technology, Engineering, and Mathematics)</option>
+                                <option value="HUMSS">HUMSS (Humanities and Social Sciences)</option>
+                                <option value="ABM">ABM (Accountancy, Business, and Management)</option>
+                                <option value="GAS">GAS (General Academic Strand)</option>
+                                <option value="ICT">ICT (Information and Communication Technology)</option>
+                                <option value="HE">HE (Home Economics)</option>
+                                <option value="IA">IA (Industrial Arts)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade-level">Grade Level</label>
+                            <select id="grade-level" class="form-control" required>
+                                <option value="">Select grade level</option>
+                                <option value="Grade 11">Grade 11</option>
+                                <option value="Grade 12">Grade 12</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <input type="text" id="section" class="form-control" placeholder="Enter section" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guardian">Guardian Name</label>
+                            <input type="text" id="guardian" class="form-control" placeholder="Enter guardian's name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guardian-contact">Guardian Contact</label>
+                            <input type="tel" id="guardian-contact" class="form-control" placeholder="Enter guardian's contact number" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register SHS Student</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- View All Students Section -->
+            <div id="view" class="section hidden">
+                <div class="card">
+                    <h3>All SHS Students</h3>
+                    <div class="table-container">
+                        <table id="students-table">
+                            <thead>
+                                <tr>
+                                    <th>LRN</th>
+                                    <th>Name</th>
+                                    <th>Track</th>
+                                    <th>Strand</th>
+                                    <th>Grade Level</th>
+                                    <th>Section</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-list">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Student Section -->
+            <div id="search" class="section hidden">
+                <div class="card">
+                    <h3>Search SHS Student</h3>
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Enter LRN or student name">
+                        <button id="search-btn" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    <div id="search-results">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Generate Reports Section -->
+            <div id="reports" class="section hidden">
+                <div class="card">
+                    <h3>Generate SHS Reports</h3>
+                    <div class="report-options">
+                        <div class="report-option" data-report="student-list">
+                            <i class="fas fa-list"></i>
+                            <h4>Student List</h4>
+                            <p>Complete list of all SHS students</p>
+                        </div>
+                        <div class="report-option" data-report="track-enrollment">
+                            <i class="fas fa-chart-pie"></i>
+                            <h4>Track Enrollment</h4>
+                            <p>Students per SHS track</p>
+                        </div>
+                        <div class="report-option" data-report="strand-enrollment">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>Strand Enrollment</h4>
+                            <p>Students per strand</p>
+                        </div>
+                        <div class="report-option" data-report="grade-level">
+                            <i class="fas fa-users"></i>
+                            <h4>Grade Level</h4>
+                            <p>Students per grade level</p>
+                        </div>
+                    </div>
+                    <div id="report-output">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Student Information</h3>
+                <button class="close-btn" id="close-edit-modal">&times;</button>
+            </div>
+            <form id="edit-student-form">
+                <input type="hidden" id="edit-student-id">
+                <div class="form-group">
+                    <label for="edit-full-name">Full Name</label>
+                    <input type="text" id="edit-full-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-birthdate">Birthdate</label>
+                    <input type="date" id="edit-birthdate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-gender">Gender</label>
+                    <select id="edit-gender" class="form-control" required>
+                        <option value="">Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-track">SHS Track</label>
+                    <select id="edit-track" class="form-control" required>
+                        <option value="">Select track</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Technical-Vocational-Livelihood">Technical-Vocational-Livelihood (TVL)</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Arts and Design">Arts and Design</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-strand">Strand</label>
+                    <select id="edit-strand" class="form-control" required>
+                        <option value="">Select strand</option>
+                        <option value="STEM">STEM (Science, Technology, Engineering, and Mathematics)</option>
+                        <option value="HUMSS">HUMSS (Humanities and Social Sciences)</option>
+                        <option value="ABM">ABM (Accountancy, Business, and Management)</option>
+                        <option value="GAS">GAS (General Academic Strand)</option>
+                        <option value="ICT">ICT (Information and Communication Technology)</option>
+                        <option value="HE">HE (Home Economics)</option>
+                        <option value="IA">IA (Industrial Arts)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-grade-level">Grade Level</label>
+                    <select id="edit-grade-level" class="form-control" required>
+                        <option value="">Select grade level</option>
+                        <option value="Grade 11">Grade 11</option>
+                        <option value="Grade 12">Grade 12</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-section">Section</label>
+                    <input type="text" id="edit-section" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-guardian">Guardian Name</label>
+                    <input type="text" id="edit-guardian" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-guardian-contact">Guardian Contact</label>
+                    <input type="tel" id="edit-guardian-contact" class="form-control" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-edit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for demonstration
+        let students = JSON.parse(localStorage.getItem('students')) || [
+            {
+                id: '123456789012',
+                name: 'Juan Dela Cruz',
+                birthdate: '2005-05-15',
+                gender: 'Male',
+                track: 'Academic',
+                strand: 'STEM',
+                gradeLevel: 'Grade 11',
+                section: 'Newton',
+                guardian: 'Maria Dela Cruz',
+                guardianContact: '09123456789'
+            },
+            {
+                id: '234567890123',
+                name: 'Maria Santos',
+                birthdate: '2005-08-22',
+                gender: 'Female',
+                track: 'Technical-Vocational-Livelihood',
+                strand: 'ICT',
+                gradeLevel: 'Grade 12',
+                section: 'Turing',
+                guardian: 'Pedro Santos',
+                guardianContact: '09234567890'
+            },
+            {
+                id: '345678901234',
+                name: 'Luis Reyes',
+                birthdate: '2004-12-10',
+                gender: 'Male',
+                track: 'Academic',
+                strand: 'HUMSS',
+                gradeLevel: 'Grade 12',
+                section: 'Aristotle',
+                guardian: 'Ana Reyes',
+                guardianContact: '09345678901'
+            }
+        ];
+
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const app = document.getElementById('app');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const sections = document.querySelectorAll('.section');
+        const pageTitle = document.getElementById('page-title');
+        const studentForm = document.getElementById('student-form');
+        const registerAlert = document.getElementById('register-alert');
+        const studentsList = document.getElementById('students-list');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const searchResults = document.getElementById('search-results');
+        const reportOptions = document.querySelectorAll('.report-option');
+        const reportOutput = document.getElementById('report-output');
+        const editModal = document.getElementById('edit-modal');
+        const closeEditModal = document.getElementById('close-edit-modal');
+        const cancelEdit = document.getElementById('cancel-edit');
+        const editStudentForm = document.getElementById('edit-student-form');
+
+        // Login functionality
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple authentication (in a real app, this would be server-side)
+            if (username === 'admin' && password === 'admin') {
+                loginPage.classList.add('hidden');
+                app.classList.remove('hidden');
+                document.getElementById('welcome-user').textContent = `Welcome, ${username}`;
+            } else {
+                loginError.style.display = 'block';
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            app.classList.add('hidden');
+            loginPage.classList.remove('hidden');
+            loginForm.reset();
+            loginError.style.display = 'none';
+        });
+
+        // Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active link
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                sections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                document.getElementById(sectionId).classList.remove('hidden');
+                
+                // Update page title
+                pageTitle.textContent = this.textContent.trim();
+                
+                // Load data if needed
+                if (sectionId === 'view') {
+                    displayStudents();
+                }
+            });
+        });
+
+        // Register new student
+        studentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const student = {
+                id: document.getElementById('student-id').value,
+                name: document.getElementById('full-name').value,
+                birthdate: document.getElementById('birthdate').value,
+                gender: document.getElementById('gender').value,
+                track: document.getElementById('track').value,
+                strand: document.getElementById('strand').value,
+                gradeLevel: document.getElementById('grade-level').value,
+                section: document.getElementById('section').value,
+                guardian: document.getElementById('guardian').value,
+                guardianContact: document.getElementById('guardian-contact').value
+            };
+            
+            // Check if student ID already exists
+            if (students.find(s => s.id === student.id)) {
+                showAlert('Student with this LRN already exists!', 'error');
+                return;
+            }
+            
+            students.push(student);
+            saveStudents();
+            studentForm.reset();
+            showAlert('Student registered successfully!', 'success');
+        });
+
+        // Display all students
+        function displayStudents() {
+            studentsList.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.track}</td>
+                    <td>${student.strand}</td>
+                    <td>${student.gradeLevel}</td>
+                    <td>${student.section}</td>
+                    <td>
+                        <button class="action-btn edit-btn" data-id="${student.id}">Edit</button>
+                        <button class="action-btn delete-btn" data-id="${student.id}">Delete</button>
+                    </td>
+                `;
+                studentsList.appendChild(row);
+            });
+            
+            // Add event listeners for edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-id');
+                    openEditModal(studentId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-id');
+                    deleteStudent(studentId);
+                });
+            });
+        }
+
+        // Search student
+        searchBtn.addEventListener('click', function() {
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (!query) {
+                searchResults.innerHTML = '<p>Please enter a search term.</p>';
+                return;
+            }
+            
+            const results = students.filter(student => 
+                student.id.includes(query) || 
+                student.name.toLowerCase().includes(query)
+            );
+            
+            displaySearchResults(results);
+        });
+
+        // Display search results
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<p>No students found matching your search.</p>';
+                return;
+            }
+            
+            results.forEach(student => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'search-result';
+                resultDiv.innerHTML = `
+                    <h4>${student.name}</h4>
+                    <p><strong>LRN:</strong> ${student.id}</p>
+                    <p><strong>Track:</strong> ${student.track}</p>
+                    <p><strong>Strand:</strong> ${student.strand}</p>
+                    <p><strong>Grade Level:</strong> ${student.gradeLevel}</p>
+                    <p><strong>Section:</strong> ${student.section}</p>
+                    <p><strong>Guardian:</strong> ${student.guardian}</p>
+                    <p><strong>Contact:</strong> ${student.guardianContact}</p>
+                `;
+                searchResults.appendChild(resultDiv);
+            });
+        }
+
+        // Report generation
+        reportOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const reportType = this.getAttribute('data-report');
+                generateReport(reportType);
+            });
+        });
+
+        function generateReport(type) {
+            let reportHTML = '<div class="report-content">';
+            
+            switch(type) {
+                case 'student-list':
+                    reportHTML += '<h4>Complete Student List</h4>';
+                    reportHTML += '<table><thead><tr><th>LRN</th><th>Name</th><th>Track</th><th>Strand</th><th>Grade Level</th><th>Section</th></tr></thead><tbody>';
+                    
+                    students.forEach(student => {
+                        reportHTML += `
+                            <tr>
+                                <td>${student.id}</td>
+                                <td>${student.name}</td>
+                                <td>${student.track}</td>
+                                <td>${student.strand}</td>
+                                <td>${student.gradeLevel}</td>
+                                <td>${student.section}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    reportHTML += '</tbody></table>';
+                    break;
+                    
+                case 'track-enrollment':
+                    reportHTML += '<h4>Track Enrollment</h4>';
+                    const trackCounts = {};
+                    
+                    students.forEach(student => {
+                        trackCounts[student.track] = (trackCounts[student.track] || 0) + 1;
+                    });
+                    
+                    reportHTML += '<ul>';
+                    for (const track in trackCounts) {
+                        reportHTML += `<li>${track}: ${trackCounts[track]} students</li>`;
+                    }
+                    reportHTML += '</ul>';
+                    break;
+                    
+                case 'strand-enrollment':
+                    reportHTML += '<h4>Strand Enrollment</h4>';
+                    const strandCounts = {};
+                    
+                    students.forEach(student => {
+                        strandCounts[student.strand] = (strandCounts[student.strand] || 0) + 1;
+                    });
+                    
+                    reportHTML += '<ul>';
+                    for (const strand in strandCounts) {
+                        reportHTML += `<li>${strand}: ${strandCounts[strand]} students</li>`;
+                    }
+                    reportHTML += '</ul>';
+                    break;
+                    
+                case 'grade-level':
+                    reportHTML += '<h4>Grade Level Distribution</h4>';
+                    const gradeCounts = {};
+                    
+                    students.forEach(student => {
+                        gradeCounts[student.gradeLevel] = (gradeCounts[student.gradeLevel] || 0) + 1;
+                    });
+                    
+                    reportHTML += '<ul>';
+                    for (const grade in gradeCounts) {
+                        reportHTML += `<li>${grade}: ${gradeCounts[grade]} students</li>`;
+                    }
+                    reportHTML += '</ul>';
+                    break;
+            }
+            
+            reportHTML += '</div>';
+            reportOutput.innerHTML = reportHTML;
+        }
+
+        // Edit student functionality
+        function openEditModal(studentId) {
+            const student = students.find(s => s.id === studentId);
+            
+            if (student) {
+                document.getElementById('edit-student-id').value = student.id;
+                document.getElementById('edit-full-name').value = student.name;
+                document.getElementById('edit-birthdate').value = student.birthdate;
+                document.getElementById('edit-gender').value = student.gender;
+                document.getElementById('edit-track').value = student.track;
+                document.getElementById('edit-strand').value = student.strand;
+                document.getElementById('edit-grade-level').value = student.gradeLevel;
+                document.getElementById('edit-section').value = student.section;
+                document.getElementById('edit-guardian').value = student.guardian;
+                document.getElementById('edit-guardian-contact').value = student.guardianContact;
+                
+                editModal.classList.remove('hidden');
+            }
+        }
+
+        editStudentForm.addEventListener('submit', function(e) {
+           
