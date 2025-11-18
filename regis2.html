@@ -137,6 +137,22 @@
             display: none;
         }
 
+        .switch-form {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .switch-form a {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+
         /* Main Application Styles */
         .container {
             display: flex;
@@ -468,6 +484,64 @@
             border-top: 1px solid #eee;
         }
 
+        /* Student Dashboard Styles */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .dashboard-card i {
+            font-size: 2.5rem;
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-card h3 {
+            margin-bottom: 0.5rem;
+            color: #1e3c72;
+        }
+
+        .dashboard-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .student-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .student-info h4 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item strong {
+            color: #555;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .container {
@@ -519,6 +593,10 @@
             .report-options {
                 grid-template-columns: 1fr;
             }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -544,12 +622,55 @@
                 <div class="login-error" id="login-error">
                     Invalid username or password. Please try again.
                 </div>
+                <div class="switch-form">
+                    <p>Don't have an account? <a href="#" id="show-signup">Sign up as student</a></p>
+                </div>
             </form>
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee;">
-                <p style="font-size: 0.9rem; color: #666; text-align: center;">
-                    
-                </p>
+        </div>
+    </div>
+
+    <!-- Student Signup Page -->
+    <div id="signup-page" class="login-container hidden">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-user-plus"></i>
+                <h1>Student Sign Up</h1>
+                <p>Create your student account</p>
             </div>
+            <form class="signup-form" id="signup-form">
+                <div class="form-group">
+                    <label for="signup-lrn">LRN (Learner Reference Number)</label>
+                    <input type="text" id="signup-lrn" class="form-control" placeholder="Enter your 12-digit LRN" required>
+                    <span class="validation-message" id="signup-lrn-validation"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signup-fullname">Full Name</label>
+                    <input type="text" id="signup-fullname" class="form-control" placeholder="Enter your full name" required>
+                    <span class="validation-message" id="signup-fullname-validation"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" class="form-control" placeholder="Enter your email" required>
+                    <span class="validation-message" id="signup-email-validation"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" placeholder="Create a password" required>
+                    <span class="validation-message" id="signup-password-validation"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" class="form-control" placeholder="Confirm your password" required>
+                    <span class="validation-message" id="signup-confirm-password-validation"></span>
+                </div>
+                <button type="submit" class="login-btn">Create Account</button>
+                <div class="login-error" id="signup-error">
+                    Error creating account. Please try again.
+                </div>
+                <div class="switch-form">
+                    <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+                </div>
+            </form>
         </div>
     </div>
     
@@ -560,11 +681,17 @@
                 <h1><i class="fas fa-graduation-cap"></i> SHS EduManage</h1>
                 <div class="user-role" id="user-role">Administrator</div>
             </div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="admin-nav">
                 <li><a href="#" class="active" data-section="register"><i class="fas fa-user-plus"></i> Register New Student</a></li>
                 <li><a href="#" data-section="view"><i class="fas fa-users"></i> View All Students</a></li>
                 <li><a href="#" data-section="search"><i class="fas fa-search"></i> Search Student</a></li>
                 <li><a href="#" data-section="reports"><i class="fas fa-chart-bar"></i> Generate Reports</a></li>
+                <li><a href="#" data-section="manage-users"><i class="fas fa-user-cog"></i> Manage Users</a></li>
+            </ul>
+            <ul class="nav-links hidden" id="student-nav">
+                <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" data-section="student-profile"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="#" data-section="student-grades"><i class="fas fa-book"></i> My Grades</a></li>
             </ul>
         </div>
         
@@ -576,6 +703,8 @@
                     <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </div>
+            
+            <!-- Admin Sections -->
             
             <!-- Register Student Section -->
             <div id="register" class="section">
@@ -728,6 +857,99 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Manage Users Section -->
+            <div id="manage-users" class="section hidden">
+                <div class="card">
+                    <h3>Manage System Users</h3>
+                    <div class="table-container">
+                        <table id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-list">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Student Sections -->
+            
+            <!-- Student Dashboard Section -->
+            <div id="dashboard" class="section hidden">
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <i class="fas fa-user-graduate"></i>
+                        <h3>My Profile</h3>
+                        <p>View and update your personal information</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-book"></i>
+                        <h3>My Grades</h3>
+                        <p>Check your academic performance</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Class Schedule</h3>
+                        <p>View your daily class schedule</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-bell"></i>
+                        <h3>Announcements</h3>
+                        <p>Latest school announcements</p>
+                    </div>
+                </div>
+                
+                <div class="student-info">
+                    <h4>Quick Information</h4>
+                    <div class="info-grid" id="student-quick-info">
+                        <!-- Student info will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Student Profile Section -->
+            <div id="student-profile" class="section hidden">
+                <div class="card">
+                    <h3>My Profile</h3>
+                    <div id="student-profile-alert" class="alert hidden"></div>
+                    <div class="student-info">
+                        <div class="info-grid" id="student-profile-info">
+                            <!-- Student profile info will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Student Grades Section -->
+            <div id="student-grades" class="section hidden">
+                <div class="card">
+                    <h3>My Grades</h3>
+                    <div class="table-container">
+                        <table id="grades-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>1st Quarter</th>
+                                    <th>2nd Quarter</th>
+                                    <th>3rd Quarter</th>
+                                    <th>4th Quarter</th>
+                                    <th>Final Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="grades-list">
+                                <!-- Grades will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -817,11 +1039,24 @@
     </div>
 
     <script>
-        // User accounts with different roles but same permissions
+        // User accounts with different roles
         const users = [
-            { username: 'admin', password: 'admin123', role: 'admin', name: 'Administrator' },
-            { username: 'teacher', password: 'teacher123', role: 'teacher', name: 'Ms. Rodriguez' }
+            { username: 'admin', password: 'admin123', role: 'admin', name: 'Ms. Administrator' },
+            { username: 'teacher', password: 'teacher123', role: 'teacher', name: 'Ms. Rodriguez' },
+            { username: 'admin1', password: 'admin123', role: 'admin', name: 'Ms. Admin A' },
+            { username: 'admin2', password: 'admin123', role: 'admin', name: 'Ms. Admin B' },
+            { username: 'admin3', password: 'admin123', role: 'admin', name: 'Mr. Admin C' },
+            { username: 'admin4', password: 'admin123', role: 'admin', name: 'Mrs. Admin D' },
+            { username: 'admin5', password: 'admin123', role: 'admin', name: 'Mr. Admin E' },
+            { username: 'admin6', password: 'admin123', role: 'admin', name: 'Mr. Admin F' },
+            { username: 'admin7', password: 'admin123', role: 'admin', name: 'Ms. Admin G' },
+            { username: 'admin8', password: 'admin123', role: 'admin', name: 'Mrs. Admin H' },
+            { username: 'admin9', password: 'admin123', role: 'admin', name: 'Mrs. Admin I' },
+            { username: 'admin10', password: 'admin123', role: 'admin', name: 'Mr. Admin J' }
         ];
+
+        // Student accounts
+        let studentAccounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
 
         // Sample data for demonstration
         let students = JSON.parse(localStorage.getItem('students')) || [
@@ -863,18 +1098,57 @@
             }
         ];
 
+        // Sample grades data
+        let grades = JSON.parse(localStorage.getItem('grades')) || [
+            {
+                studentId: '123456789012',
+                subjects: [
+                    { name: 'Mathematics', q1: 90, q2: 88, q3: 92, q4: 89 },
+                    { name: 'Science', q1: 85, q2: 87, q3: 90, q4: 88 },
+                    { name: 'English', q1: 92, q2: 91, q3: 89, q4: 93 },
+                    { name: 'Filipino', q1: 88, q2: 86, q3: 90, q4: 87 }
+                ]
+            },
+            {
+                studentId: '234567890123',
+                subjects: [
+                    { name: 'Mathematics', q1: 85, q2: 82, q3: 88, q4: 86 },
+                    { name: 'Science', q1: 90, q2: 88, q3: 91, q4: 89 },
+                    { name: 'English', q1: 87, q2: 85, q3: 88, q4: 86 },
+                    { name: 'Filipino', q1: 89, q2: 87, q3: 90, q4: 88 }
+                ]
+            },
+            {
+                studentId: '345678901234',
+                subjects: [
+                    { name: 'Mathematics', q1: 92, q2: 90, q3: 94, q4: 91 },
+                    { name: 'Science', q1: 88, q2: 90, q3: 87, q4: 89 },
+                    { name: 'English', q1: 90, q2: 92, q3: 91, q4: 93 },
+                    { name: 'Filipino', q1: 87, q2: 85, q3: 88, q4: 86 }
+                ]
+            }
+        ];
+
         // DOM Elements
         const loginPage = document.getElementById('login-page');
+        const signupPage = document.getElementById('signup-page');
         const app = document.getElementById('app');
         const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
         const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
         const logoutBtn = document.getElementById('logout-btn');
+        const adminNav = document.getElementById('admin-nav');
+        const studentNav = document.getElementById('student-nav');
         const navLinks = document.querySelectorAll('.nav-links a');
         const sections = document.querySelectorAll('.section');
         const pageTitle = document.getElementById('page-title');
         const studentForm = document.getElementById('student-form');
         const registerAlert = document.getElementById('register-alert');
         const studentsList = document.getElementById('students-list');
+        const usersList = document.getElementById('users-list');
         const searchInput = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
         const searchResults = document.getElementById('search-results');
@@ -888,6 +1162,9 @@
         const welcomeUserElement = document.getElementById('welcome-user');
         const registerBtn = document.getElementById('register-btn');
         const updateBtn = document.getElementById('update-btn');
+        const studentQuickInfo = document.getElementById('student-quick-info');
+        const studentProfileInfo = document.getElementById('student-profile-info');
+        const gradesList = document.getElementById('grades-list');
 
         // Current user
         let currentUser = null;
@@ -922,6 +1199,15 @@
 
         function validateRequired(value) {
             return value && value.trim() !== '';
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
         }
 
         // Validation functions for form fields
@@ -1021,6 +1307,116 @@
             return true;
         }
 
+        // Student signup validation
+        function validateSignupLRN() {
+            const lrn = document.getElementById('signup-lrn').value;
+            const validationElement = document.getElementById('signup-lrn-validation');
+            
+            if (!validateRequired(lrn)) {
+                showValidationError(validationElement, 'LRN is required');
+                return false;
+            }
+            
+            if (!validateLRN(lrn)) {
+                showValidationError(validationElement, 'LRN must be exactly 12 digits');
+                return false;
+            }
+            
+            // Check if LRN exists in student records
+            if (!students.find(s => s.id === lrn)) {
+                showValidationError(validationElement, 'LRN not found in student records');
+                return false;
+            }
+            
+            // Check if student already has an account
+            if (studentAccounts.find(s => s.lrn === lrn)) {
+                showValidationError(validationElement, 'Account already exists for this LRN');
+                return false;
+            }
+            
+            showValidationSuccess(validationElement, 'Valid LRN');
+            return true;
+        }
+
+        function validateSignupFullName() {
+            const fullName = document.getElementById('signup-fullname').value;
+            const validationElement = document.getElementById('signup-fullname-validation');
+            
+            if (!validateRequired(fullName)) {
+                showValidationError(validationElement, 'Full name is required');
+                return false;
+            }
+            
+            if (!validateName(fullName)) {
+                showValidationError(validationElement, 'Please enter a valid name');
+                return false;
+            }
+            
+            showValidationSuccess(validationElement, 'Valid name');
+            return true;
+        }
+
+        function validateSignupEmail() {
+            const email = document.getElementById('signup-email').value;
+            const validationElement = document.getElementById('signup-email-validation');
+            
+            if (!validateRequired(email)) {
+                showValidationError(validationElement, 'Email is required');
+                return false;
+            }
+            
+            if (!validateEmail(email)) {
+                showValidationError(validationElement, 'Please enter a valid email address');
+                return false;
+            }
+            
+            // Check if email is already used
+            if (studentAccounts.find(s => s.email === email)) {
+                showValidationError(validationElement, 'Email already registered');
+                return false;
+            }
+            
+            showValidationSuccess(validationElement, 'Valid email');
+            return true;
+        }
+
+        function validateSignupPassword() {
+            const password = document.getElementById('signup-password').value;
+            const validationElement = document.getElementById('signup-password-validation');
+            
+            if (!validateRequired(password)) {
+                showValidationError(validationElement, 'Password is required');
+                return false;
+            }
+            
+            if (!validatePassword(password)) {
+                showValidationError(validationElement, 'Password must be at least 6 characters');
+                return false;
+            }
+            
+            showValidationSuccess(validationElement, 'Valid password');
+            return true;
+        }
+
+        function validateSignupConfirmPassword() {
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const validationElement = document.getElementById('signup-confirm-password-validation');
+            
+            if (!validateRequired(confirmPassword)) {
+                showValidationError(validationElement, 'Please confirm your password');
+                return false;
+            }
+            
+            if (password !== confirmPassword) {
+                showValidationError(validationElement, 'Passwords do not match');
+                return false;
+            }
+            
+            showValidationSuccess(validationElement, 'Passwords match');
+            return true;
+        }
+
         // Helper functions for validation UI
         function showValidationError(element, message) {
             element.textContent = message;
@@ -1049,6 +1445,10 @@
                 saveStudents();
             }
             
+            if (!localStorage.getItem('grades')) {
+                saveGrades();
+            }
+            
             // Set up event listeners
             setupEventListeners();
         }
@@ -1063,6 +1463,7 @@
                 
                 // Authenticate user
                 const user = users.find(u => u.username === username && u.password === password);
+                const studentAccount = studentAccounts.find(s => s.username === username && s.password === password);
                 
                 if (user) {
                     currentUser = user;
@@ -1070,9 +1471,96 @@
                     app.classList.remove('hidden');
                     welcomeUserElement.textContent = `Welcome, ${user.name}`;
                     userRoleElement.textContent = user.role === 'admin' ? 'Administrator' : 'Teacher';
+                    
+                    // Show appropriate navigation based on role
+                    if (user.role === 'admin' || user.role === 'teacher') {
+                        adminNav.classList.remove('hidden');
+                        studentNav.classList.add('hidden');
+                        showSection('register');
+                    }
+                } else if (studentAccount) {
+                    currentUser = {
+                        username: studentAccount.username,
+                        role: 'student',
+                        name: studentAccount.name,
+                        lrn: studentAccount.lrn
+                    };
+                    loginPage.classList.add('hidden');
+                    app.classList.remove('hidden');
+                    welcomeUserElement.textContent = `Welcome, ${studentAccount.name}`;
+                    userRoleElement.textContent = 'Student';
+                    
+                    // Show student navigation
+                    adminNav.classList.add('hidden');
+                    studentNav.classList.remove('hidden');
+                    showSection('dashboard');
+                    loadStudentDashboard();
                 } else {
                     loginError.style.display = 'block';
                 }
+            });
+
+            // Student signup functionality
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate all fields before submission
+                const isLRNValid = validateSignupLRN();
+                const isFullNameValid = validateSignupFullName();
+                const isEmailValid = validateSignupEmail();
+                const isPasswordValid = validateSignupPassword();
+                const isConfirmPasswordValid = validateSignupConfirmPassword();
+                
+                if (!isLRNValid || !isFullNameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
+                    signupError.textContent = 'Please fix the validation errors before submitting.';
+                    signupError.style.display = 'block';
+                    return;
+                }
+                
+                const lrn = document.getElementById('signup-lrn').value;
+                const fullName = document.getElementById('signup-fullname').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                
+                // Create student account
+                const studentAccount = {
+                    lrn: lrn,
+                    username: email, // Use email as username
+                    password: password,
+                    name: fullName,
+                    email: email
+                };
+                
+                studentAccounts.push(studentAccount);
+                saveStudentAccounts();
+                signupForm.reset();
+                
+                // Clear validation messages
+                document.querySelectorAll('#signup-form .validation-message').forEach(el => {
+                    clearValidation(el);
+                });
+                
+                signupError.textContent = 'Account created successfully! You can now login.';
+                signupError.style.background = '#e8f5e9';
+                signupError.style.color = '#2e7d32';
+                signupError.style.border = '1px solid #c8e6c9';
+                signupError.style.display = 'block';
+                
+                // Switch to login form after 2 seconds
+                setTimeout(() => {
+                    showLoginForm();
+                }, 2000);
+            });
+
+            // Switch between login and signup forms
+            showSignupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSignupForm();
+            });
+
+            showLoginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showLoginForm();
             });
 
             // Logout functionality
@@ -1090,15 +1578,13 @@
                     e.preventDefault();
                     
                     // Update active link
-                    navLinks.forEach(l => l.classList.remove('active'));
+                    const parentNav = this.closest('.nav-links');
+                    parentNav.querySelectorAll('a').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                     
                     // Show corresponding section
                     const sectionId = this.getAttribute('data-section');
-                    sections.forEach(section => {
-                        section.classList.add('hidden');
-                    });
-                    document.getElementById(sectionId).classList.remove('hidden');
+                    showSection(sectionId);
                     
                     // Update page title
                     pageTitle.textContent = this.textContent.trim();
@@ -1108,6 +1594,12 @@
                         displayStudents();
                     } else if (sectionId === 'reports') {
                         reportOutput.innerHTML = '';
+                    } else if (sectionId === 'manage-users') {
+                        displayUsers();
+                    } else if (sectionId === 'student-profile') {
+                        loadStudentProfile();
+                    } else if (sectionId === 'student-grades') {
+                        loadStudentGrades();
                     }
                 });
             });
@@ -1118,6 +1610,13 @@
             document.getElementById('birthdate').addEventListener('change', validateBirthdateField);
             document.getElementById('guardian-contact').addEventListener('input', validateGuardianContact);
             document.getElementById('edit-guardian-contact').addEventListener('input', validateEditGuardianContact);
+
+            // Student signup validation events
+            document.getElementById('signup-lrn').addEventListener('input', validateSignupLRN);
+            document.getElementById('signup-fullname').addEventListener('input', validateSignupFullName);
+            document.getElementById('signup-email').addEventListener('input', validateSignupEmail);
+            document.getElementById('signup-password').addEventListener('input', validateSignupPassword);
+            document.getElementById('signup-confirm-password').addEventListener('input', validateSignupConfirmPassword);
 
             // Register new student
             studentForm.addEventListener('submit', function(e) {
@@ -1236,6 +1735,35 @@
             });
         }
 
+        // Show section function
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Show login form
+        function showLoginForm() {
+            signupPage.classList.add('hidden');
+            loginPage.classList.remove('hidden');
+            signupForm.reset();
+            signupError.style.display = 'none';
+            
+            // Reset validation messages
+            document.querySelectorAll('#signup-form .validation-message').forEach(el => {
+                clearValidation(el);
+            });
+        }
+
+        // Show signup form
+        function showSignupForm() {
+            loginPage.classList.add('hidden');
+            signupPage.classList.remove('hidden');
+            loginForm.reset();
+            loginError.style.display = 'none';
+        }
+
         // Display all students
         function displayStudents() {
             studentsList.innerHTML = '';
@@ -1272,6 +1800,58 @@
                 btn.addEventListener('click', function() {
                     const studentId = this.getAttribute('data-id');
                     deleteStudent(studentId);
+                });
+            });
+        }
+
+        // Display all users
+        function displayUsers() {
+            usersList.innerHTML = '';
+            
+            // Display admin accounts
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
+                    <td>${user.name}</td>
+                    <td>
+                        <button class="action-btn edit-btn" data-username="${user.username}">Reset Password</button>
+                    </td>
+                `;
+                
+                usersList.appendChild(row);
+            });
+            
+            // Display student accounts
+            studentAccounts.forEach(student => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${student.username}</td>
+                    <td>Student</td>
+                    <td>${student.name}</td>
+                    <td>
+                        <button class="action-btn delete-btn" data-username="${student.username}">Delete</button>
+                    </td>
+                `;
+                
+                usersList.appendChild(row);
+            });
+            
+            // Add event listeners for user management buttons
+            document.querySelectorAll('#users-list .edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const username = this.getAttribute('data-username');
+                    resetUserPassword(username);
+                });
+            });
+            
+            document.querySelectorAll('#users-list .delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const username = this.getAttribute('data-username');
+                    deleteUserAccount(username);
                 });
             });
         }
@@ -1414,9 +1994,150 @@
             }
         }
 
+        // Reset user password
+        function resetUserPassword(username) {
+            if (confirm('Reset password for ' + username + ' to "password123"?')) {
+                // Find user and reset password
+                const userIndex = users.findIndex(u => u.username === username);
+                if (userIndex !== -1) {
+                    users[userIndex].password = 'password123';
+                    alert('Password reset successfully for ' + username);
+                }
+                
+                // For student accounts
+                const studentIndex = studentAccounts.findIndex(s => s.username === username);
+                if (studentIndex !== -1) {
+                    studentAccounts[studentIndex].password = 'password123';
+                    saveStudentAccounts();
+                    alert('Password reset successfully for ' + username);
+                }
+            }
+        }
+
+        // Delete user account
+        function deleteUserAccount(username) {
+            if (confirm('Are you sure you want to delete this user account?')) {
+                studentAccounts = studentAccounts.filter(s => s.username !== username);
+                saveStudentAccounts();
+                displayUsers();
+                alert('User account deleted successfully!');
+            }
+        }
+
+        // Load student dashboard
+        function loadStudentDashboard() {
+            if (currentUser && currentUser.role === 'student') {
+                const student = students.find(s => s.id === currentUser.lrn);
+                
+                if (student) {
+                    studentQuickInfo.innerHTML = `
+                        <div class="info-item">
+                            <strong>LRN:</strong> ${student.id}
+                        </div>
+                        <div class="info-item">
+                            <strong>Name:</strong> ${student.name}
+                        </div>
+                        <div class="info-item">
+                            <strong>Track:</strong> ${student.track}
+                        </div>
+                        <div class="info-item">
+                            <strong>Strand:</strong> ${student.strand}
+                        </div>
+                        <div class="info-item">
+                            <strong>Grade Level:</strong> ${student.gradeLevel}
+                        </div>
+                        <div class="info-item">
+                            <strong>Section:</strong> ${student.section}
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Load student profile
+        function loadStudentProfile() {
+            if (currentUser && currentUser.role === 'student') {
+                const student = students.find(s => s.id === currentUser.lrn);
+                
+                if (student) {
+                    studentProfileInfo.innerHTML = `
+                        <div class="info-item">
+                            <strong>LRN:</strong> ${student.id}
+                        </div>
+                        <div class="info-item">
+                            <strong>Full Name:</strong> ${student.name}
+                        </div>
+                        <div class="info-item">
+                            <strong>Birthdate:</strong> ${formatDate(student.birthdate)}
+                        </div>
+                        <div class="info-item">
+                            <strong>Gender:</strong> ${student.gender}
+                        </div>
+                        <div class="info-item">
+                            <strong>Track:</strong> ${student.track}
+                        </div>
+                        <div class="info-item">
+                            <strong>Strand:</strong> ${student.strand}
+                        </div>
+                        <div class="info-item">
+                            <strong>Grade Level:</strong> ${student.gradeLevel}
+                        </div>
+                        <div class="info-item">
+                            <strong>Section:</strong> ${student.section}
+                        </div>
+                        <div class="info-item">
+                            <strong>Guardian:</strong> ${student.guardian}
+                        </div>
+                        <div class="info-item">
+                            <strong>Guardian Contact:</strong> ${student.guardianContact}
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Load student grades
+        function loadStudentGrades() {
+            if (currentUser && currentUser.role === 'student') {
+                const studentGrades = grades.find(g => g.studentId === currentUser.lrn);
+                
+                if (studentGrades) {
+                    gradesList.innerHTML = '';
+                    
+                    studentGrades.subjects.forEach(subject => {
+                        const finalGrade = (subject.q1 + subject.q2 + subject.q3 + subject.q4) / 4;
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${subject.name}</td>
+                            <td>${subject.q1}</td>
+                            <td>${subject.q2}</td>
+                            <td>${subject.q3}</td>
+                            <td>${subject.q4}</td>
+                            <td>${finalGrade.toFixed(2)}</td>
+                        `;
+                        
+                        gradesList.appendChild(row);
+                    });
+                } else {
+                    gradesList.innerHTML = '<tr><td colspan="6" style="text-align: center;">No grades available</td></tr>';
+                }
+            }
+        }
+
         // Save students to localStorage
         function saveStudents() {
             localStorage.setItem('students', JSON.stringify(students));
+        }
+
+        // Save student accounts to localStorage
+        function saveStudentAccounts() {
+            localStorage.setItem('studentAccounts', JSON.stringify(studentAccounts));
+        }
+
+        // Save grades to localStorage
+        function saveGrades() {
+            localStorage.setItem('grades', JSON.stringify(grades));
         }
 
         // Show alert message
